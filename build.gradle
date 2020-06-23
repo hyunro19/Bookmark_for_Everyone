@@ -1,0 +1,61 @@
+buildscript {
+    ext { // build.gradle에서 사용하는 전역변수 설정
+        springBootVersion = '2.1.7.RELEASE'
+    }
+    repositories {
+        mavenCentral()
+        jcenter()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+        // spring-boot-gradle-plugin라는 스프링 부트 그레이들 플러그인의 2.7.1.RELEASE를 의존성으로 받겠다.
+    }
+}
+// 자바와 스프링부트를 사용하기 위한 필수 4개 플러그인(항상 추가해주어야 한다.)
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management' // 스프링 부트의 의존성들을 관리해주는 플러그인.
+
+group 'org.example'
+version '1.0.1-SNAPSHOT-'+new Date().format("yyyyMMddHHmmss")
+sourceCompatibility = 1.8
+
+repositories { // 각종 의존성 (라이브러리)들을 어떤 원격 저장소에서 받을지를 결정.
+    mavenCentral() // 라이브러리 업로드 난이도가 높아, 최근에는 jcenter도 많이 사용.
+    jcenter() // 개발자 본인 라이브러리 업로드가 간단, 자동으로 mavenCentral()로의 업로드도 지원
+}
+
+dependencies { // 프로젝트 개발에 필요한 의존성들을 선언하는 곳
+    compile('org.springframework.boot:spring-boot-starter-web')
+    compile('org.projectlombok:lombok')
+
+    // 스프링부트용 Spring Data Jpa 추상화 라이브러리
+    // 스프링부트 버전에 맞게 자동으로 JPA관련 라이브러리들 버전을 관리해준다.
+    compile('org.springframework.boot:spring-boot-starter-data-jpa')
+
+    // 인메모리 관계형 데이터베이스
+    // 별도 설치 없이 프로젝트 의존성만으로 관리 가능
+    // 메모리에서 실행되기 때문에 애플리케이션을 재시작할 때마다 초기화 (그래서 테스트용으로 많이 사용)
+    compile('com.h2database:h2')
+
+    // mustache starter 의존성
+    compile('org.springframework.boot:spring-boot-starter-mustache')
+
+    // 스프링 시큐리티
+    // 소셜 로그인 등 클라이언트 입장에서 소셜 기능 구현시 필요한 의존성
+    compile('org.springframework.boot:spring-boot-starter-oauth2-client')
+
+    compile('org.springframework.session:spring-session-jdbc')
+
+    // MariaDB JDBC
+    compile('org.mariadb.jdbc:mariadb-java-client')
+    // 여기서는 라이브러리 버전을 명시하면 안된다. 명시하지 않아야 ext에서 선언한 버전을 따라간다.
+    testCompile('org.springframework.boot:spring-boot-starter-test')
+    testCompile('org.springframework.security:spring-security-test')
+
+}
+
+// 이렇게 관리할 경우 각 라이브러리들의 버전 관리가 한 곳에 집중되고,
+// 버전 충돌 문제도 해결되어 편하게 개발 진행 가능
+
