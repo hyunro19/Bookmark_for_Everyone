@@ -1,7 +1,7 @@
 {{>layout/header}}
 <!-- Double Mustache와 >뒤에 상대경로(확장자 제외)를 쓰면 머스테치가 알아서 붙여준다.-->
 
-    <h1>TabMenu</h1>
+    <h1>모두의 북마크</h1>
     <div class="col-md-12">
         <!-- 로그인 기능 영역 -->
         <div class="row">
@@ -12,7 +12,7 @@
                 true/false여부만 판단 (그러므로 항상 최종값을 넘겨줘야 한다.)
                 -->
                 {{#userName}}
-                    Logged in as: <span id="user">{{userName}}</span>
+                    안녕하세요. <span id="user">{{userName}}</span> 님
                     <a href="/logout" class="btn btn-info active" role="button">Logout</a>
                 {{/userName}}
                 <!--
