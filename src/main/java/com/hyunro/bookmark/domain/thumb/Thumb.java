@@ -18,12 +18,12 @@ public class Thumb extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "user_id", nullable = false, updatable = false)
+    @ManyToOne
+    @JoinColumn(name = "user_id", updatable = false)
     private User user;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "bookmark_id", nullable = false, updatable = false)
+    @ManyToOne
+    @JoinColumn(name = "bookmark_id", updatable = false)
     private Bookmark bookmark;
 
     @Builder

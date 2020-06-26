@@ -18,14 +18,14 @@ public class Comment extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "user_id", nullable = false, updatable = false)
+    @ManyToOne
+    @JoinColumn(name = "user_id", updatable = false)
     private User user;
 
     private String user_name;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "bookmark_id", nullable = false, updatable = false)
+    @ManyToOne
+    @JoinColumn(name = "bookmark_id", updatable = false)
     private Bookmark bookmark;
 
     @Column(length = 500, nullable = false)

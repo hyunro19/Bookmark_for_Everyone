@@ -17,8 +17,8 @@ public class Bookmark extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "user_id", nullable = false, updatable = false)
+    @ManyToOne
+    @JoinColumn(name = "user_id", updatable = false)
     private User user;
 
     private String user_name;
