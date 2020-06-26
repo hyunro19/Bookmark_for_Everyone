@@ -36,16 +36,17 @@ public class Bookmark extends BaseTimeEntity {
     @Column(length = 500)
     private String content;
 
-    private Integer number_coment;
+    private Integer number_comment;
 
-    private Integer number_like;
+    private Integer number_thumb;
 
     private Integer number_share;
 
-    private Boolean is_public;
+    private Integer is_public;
 
     @Builder
-    public Bookmark(User user, String user_name, String topic, String url, String src_title, String src_description, String content, Boolean is_public) {
+    public Bookmark(User user, String user_name, String topic, String url, String src_title, String src_description, String content,
+                    Integer number_comment, Integer number_thumb, Integer number_share, Integer is_public) {
         this.user = user;
         this.user_name = user_name;
         this.topic = topic;
@@ -53,15 +54,22 @@ public class Bookmark extends BaseTimeEntity {
         this.src_title = src_title;
         this.src_description = src_description;
         this.content = content;
+        this.number_comment = number_comment;
+        this.number_thumb = number_thumb;
+        this.number_share = number_share;
         this.is_public = is_public;
     }
 
-    public void update(String topic, String url, String src_title, String src_description, String content, Boolean is_public) {
+    public void update(String topic, String url, String src_title, String src_description, String content,
+                       Integer number_comment, Integer number_thumb, Integer number_share, Integer is_public) {
         this.topic = topic;
         this.url = url;
         this.src_title = src_title;
         this.src_description = src_description;
         this.content = content;
+        this.number_comment = number_comment;
+        this.number_thumb = number_thumb;
+        this.number_share = number_share;
         this.is_public = is_public;
     }
 }

@@ -41,6 +41,8 @@ public class CommentRepositoryTest {
                 .picture("테스트 사진")
                 .role(Role.GUEST)
                 .build();
+        userRepository.save(user);
+
         bookmark = Bookmark.builder()
                 .user(user)
                 .user_name(user.getName())
@@ -48,6 +50,7 @@ public class CommentRepositoryTest {
                 .url("테스트 URL")
                 .content("테스트 내용")
                 .build();
+        bookmarkRepository.save(bookmark);
     }
 
     @After // Junit에서 단위테스트가 끝날때마다 수행되는 메소드를 지정

@@ -11,6 +11,7 @@ public class PostsResponseDto {
     private String content;
     private String author;
 
+    // Constructor
     public PostsResponseDto(Posts entity) {
         this.id = entity.getId();
         this.title = entity.getTitle();
