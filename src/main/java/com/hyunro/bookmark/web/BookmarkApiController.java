@@ -11,8 +11,6 @@ import com.hyunro.bookmark.web.dto.bookmark.BookmarkUpdateRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpSession;
-
 @RequiredArgsConstructor
 @RestController
 public class BookmarkApiController {
@@ -22,11 +20,12 @@ public class BookmarkApiController {
 
     @PostMapping("/api/v1/bookmark")
     public Long save(@RequestBody BookmarkSaveRequestDto requestDto, @LoginUser SessionUser sessionUser) {
-        Long user_id;
+        Long user_id = null;
         User user = null;
         if(sessionUser != null) {
             user_id = sessionUser.getId();
             user = userRepository.getOne(user_id);
+            System.out.println(">>>>>>>>user : "+user_id+"<<<<<<<<<<<<<");
         }
         return bookmarkService.save(requestDto, user);
     }

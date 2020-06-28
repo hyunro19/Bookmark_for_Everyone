@@ -4,11 +4,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.hyunro.bookmark.config.auth.dto.SessionUser;
 import com.hyunro.bookmark.domain.bookmark.Bookmark;
 import com.hyunro.bookmark.domain.bookmark.BookmarkRepository;
+import com.hyunro.bookmark.domain.comment.Comment;
+import com.hyunro.bookmark.domain.comment.CommentRepository;
 import com.hyunro.bookmark.domain.user.Role;
 import com.hyunro.bookmark.domain.user.User;
 import com.hyunro.bookmark.domain.user.UserRepository;
-import com.hyunro.bookmark.web.dto.bookmark.BookmarkSaveRequestDto;
-import com.hyunro.bookmark.web.dto.bookmark.BookmarkUpdateRequestDto;
+import com.hyunro.bookmark.web.dto.comment.CommentSaveRequestDto;
+import com.hyunro.bookmark.web.dto.comment.CommentUpdateRequestDto;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -19,7 +21,6 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockHttpSession;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -30,13 +31,12 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class BookmarkApiControllerTest {
+public class CommentApiControllerTest {
 
     @LocalServerPort
     private int port;
@@ -51,10 +51,14 @@ public class BookmarkApiControllerTest {
     private BookmarkRepository bookmarkRepository;
 
     @Autowired
+    private CommentRepository commentRepository;
+
+    @Autowired
     private WebApplicationContext context;
 
     private MockMvc mvc;
     private User user;
+    private Bookmark bookmark;
 
     @Before
     public void setup() {
@@ -70,43 +74,36 @@ public class BookmarkApiControllerTest {
                 .build();
         userRepository.save(user);
         user = userRepository.findAll().get(0);
+        bookmark = Bookmark.builder()
+                .user(user)
+                .topic("테스트 토픽")
+                .url("테스트 유알엘")
+                .content("테스트 내용")
+                .build();
+        bookmarkRepository.save(bookmark);
+        bookmark = bookmarkRepository.findAll().get(0);
     }
 
     @After
     public void tearDown() throws Exception {
+        commentRepository.deleteAll();
         bookmarkRepository.deleteAll();
         userRepository.deleteAll();
     }
 
     @Test
     @WithMockUser(roles="USER")
-    public void Bookmark_등록된다() throws Exception {
+    public void Comment_등록된다() throws Exception {
         //given
-        String topic = "topic";
-        String url1 = "url";
-        String src_title = "src_title";
-        String src_description = "src_description";
-        String content = "content";
-        Integer number_comment = 0;
-        Integer number_thumb = 0;
-        Integer number_share = 0;
-        Integer is_public = 0;
+        Long bookmark_id = bookmark.getId();
+        String content = "테스트 코멘트 내용";
 
-        BookmarkSaveRequestDto requestDto = BookmarkSaveRequestDto.builder()
-//                .user(user)
-//                .user_name(user.getName())
-                .topic(topic)
-                .url(url1)
-                .src_title(src_title)
-                .src_description(src_description)
+        CommentSaveRequestDto requestDto = CommentSaveRequestDto.builder()
+                .bookmark_id(bookmark_id)
                 .content(content)
-                .number_comment(number_comment)
-                .number_thumb(number_thumb)
-                .number_share(number_share)
-                .is_public(is_public)
                 .build();
 
-        String url = "http://localhost:"+port+"/api/v1/bookmark";
+        String url = "http://localhost:"+port+"/api/v1/comment";
 
         //when
         mvc.perform(post(url)
@@ -115,50 +112,40 @@ public class BookmarkApiControllerTest {
         .content(new ObjectMapper().writeValueAsString(requestDto)))
         .andExpect(status().isOk());
 
-        List<Bookmark> all = bookmarkRepository.findAll();
+        List<Comment> all = commentRepository.findAll();
         assertThat(all.get(0).getContent()).isEqualTo(content);
     }
 
     @Test
     @WithMockUser(roles="USER")
-    public void Bookmark_수정된다() throws Exception {
+    public void Comment_수정된다() throws Exception {
         //given
-        String topic = "테스트 토픽";
-        String url1 = "테스트 유알엘";
-        String content = "테스트 내용";
+        String content = "테스트 코멘트 내용";
 
-        Bookmark savedBookmark = bookmarkRepository.save(Bookmark.builder()
-                .topic(topic)
-                .url(url1)
-                .content(content)
+        Comment savedComment = commentRepository.save(Comment.builder()
+            .user(user)
+            .bookmark(bookmark)
+            .content(content)
             .build());
 
-        Long updateId = savedBookmark.getId();
-        String expectedTopic = "테스트 토픽2";
-        String expectedUrl = "테스트 유알엘2";
-        String expectedContent = "테스트 내용2";
-        BookmarkUpdateRequestDto requestDto = BookmarkUpdateRequestDto.builder()
-                .topic(expectedTopic)
-                .url(expectedUrl)
+        Long updateId = savedComment.getId();
+        String expectedContent = "테스트 코멘트 내용2";
+        CommentUpdateRequestDto requestDto = CommentUpdateRequestDto.builder()
                 .content(expectedContent)
                 .build();
 
+        String url = "http://localhost:"+port+"/api/v1/comment/"+updateId;
 
-        String url = "http://localhost:"+port+"/api/v1/bookmark/"+updateId;
-
-        HttpEntity<BookmarkUpdateRequestDto> requestEntity = new HttpEntity<>(requestDto);
+        System.out.println(">>>>"+new ObjectMapper().writeValueAsString(requestDto).toString());
+        HttpEntity<CommentUpdateRequestDto> requestEntity = new HttpEntity<>(requestDto);
 
         //when
         mvc.perform(put(url)
-                .sessionAttr("user", new SessionUser(user))
             .contentType(MediaType.APPLICATION_JSON_UTF8)
             .content(new ObjectMapper().writeValueAsString(requestDto)))
             .andExpect(status().isOk());
-        List<Bookmark> all = bookmarkRepository.findAll();
-        assertThat(all.get(0).getTopic()).isEqualTo(expectedTopic);
-        assertThat(all.get(0).getUrl()).isEqualTo(expectedUrl);
+        List<Comment> all = commentRepository.findAll();
         assertThat(all.get(0).getContent()).isEqualTo(expectedContent);
-
     }
 
 }

@@ -40,8 +40,7 @@ public class Comment extends BaseTimeEntity {
         this.content = content;
     }
 
-    public void update(Bookmark bookmark, String content) {
-        this.bookmark = bookmark;
+    public void update(String content) {
         this.content = content;
     }
 }
