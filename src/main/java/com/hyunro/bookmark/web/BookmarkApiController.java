@@ -25,7 +25,6 @@ public class BookmarkApiController {
         if(sessionUser != null) {
             user_id = sessionUser.getId();
             user = userRepository.getOne(user_id);
-            System.out.println(">>>>>>>>user : "+user_id+"<<<<<<<<<<<<<");
         }
         return bookmarkService.save(requestDto, user);
     }

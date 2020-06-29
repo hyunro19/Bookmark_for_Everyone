@@ -6,11 +6,12 @@ import com.hyunro.bookmark.domain.bookmark.Bookmark;
 import com.hyunro.bookmark.domain.bookmark.BookmarkRepository;
 import com.hyunro.bookmark.domain.comment.Comment;
 import com.hyunro.bookmark.domain.comment.CommentRepository;
+import com.hyunro.bookmark.domain.thumb.Thumb;
+import com.hyunro.bookmark.domain.thumb.ThumbRepository;
 import com.hyunro.bookmark.domain.user.Role;
 import com.hyunro.bookmark.domain.user.User;
 import com.hyunro.bookmark.domain.user.UserRepository;
-import com.hyunro.bookmark.web.dto.comment.CommentSaveRequestDto;
-import com.hyunro.bookmark.web.dto.comment.CommentUpdateRequestDto;
+import com.hyunro.bookmark.web.dto.thumb.ThumbSaveRequestDto;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -19,7 +20,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -31,12 +31,13 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class CommentApiControllerTest {
+public class ThumbApiControllerTest {
 
     @LocalServerPort
     private int port;
@@ -51,7 +52,7 @@ public class CommentApiControllerTest {
     private BookmarkRepository bookmarkRepository;
 
     @Autowired
-    private CommentRepository commentRepository;
+    private ThumbRepository thumbRepository;
 
     @Autowired
     private WebApplicationContext context;
@@ -86,24 +87,22 @@ public class CommentApiControllerTest {
 
     @After
     public void tearDown() throws Exception {
-        commentRepository.deleteAll();
+        thumbRepository.deleteAll();
         bookmarkRepository.deleteAll();
         userRepository.deleteAll();
     }
 
     @Test
     @WithMockUser(roles="USER")
-    public void Comment_등록된다() throws Exception {
+    public void Thumb_등록된다() throws Exception {
         //given
         Long bookmark_id = bookmark.getId();
-        String content = "테스트 코멘트 내용";
 
-        CommentSaveRequestDto requestDto = CommentSaveRequestDto.builder()
+        ThumbSaveRequestDto requestDto = ThumbSaveRequestDto.builder()
                 .bookmark_id(bookmark_id)
-                .content(content)
                 .build();
 
-        String url = "http://localhost:"+port+"/api/v1/comment";
+        String url = "http://localhost:"+port+"/api/v1/thumb";
 
         //when
         mvc.perform(post(url)
@@ -112,39 +111,9 @@ public class CommentApiControllerTest {
         .content(new ObjectMapper().writeValueAsString(requestDto)))
         .andExpect(status().isOk());
 
-        List<Comment> all = commentRepository.findAll();
-        assertThat(all.get(0).getContent()).isEqualTo(content);
-    }
-
-    @Test
-    @WithMockUser(roles="USER")
-    public void Comment_수정된다() throws Exception {
-        //given
-        String content = "테스트 코멘트 내용";
-
-        Comment savedComment = commentRepository.save(Comment.builder()
-            .user(user)
-            .bookmark(bookmark)
-            .content(content)
-            .build());
-
-        Long updateId = savedComment.getId();
-        String expectedContent = "테스트 코멘트 내용2";
-        CommentUpdateRequestDto requestDto = CommentUpdateRequestDto.builder()
-                .content(expectedContent)
-                .build();
-
-        String url = "http://localhost:"+port+"/api/v1/comment/"+updateId;
-
-        HttpEntity<CommentUpdateRequestDto> requestEntity = new HttpEntity<>(requestDto);
-
-        //when
-        mvc.perform(put(url)
-            .contentType(MediaType.APPLICATION_JSON_UTF8)
-            .content(new ObjectMapper().writeValueAsString(requestDto)))
-            .andExpect(status().isOk());
-        List<Comment> all = commentRepository.findAll();
-        assertThat(all.get(0).getContent()).isEqualTo(expectedContent);
+        List<Thumb> all = thumbRepository.findAll();
+        assertThat(all.get(0).getUser().getId()).isEqualTo(user.getId());
+        assertThat(all.get(0).getBookmark().getId()).isEqualTo(bookmark.getId());
     }
 
 }
