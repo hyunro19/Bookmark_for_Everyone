@@ -1,11 +1,16 @@
 package com.hyunro.bookmark.domain.user;
 
 import com.hyunro.bookmark.domain.BaseTimeEntity;
+import com.hyunro.bookmark.domain.bookmark.Bookmark;
+import com.hyunro.bookmark.domain.comment.Comment;
+import com.hyunro.bookmark.domain.thumb.Thumb;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @NoArgsConstructor
@@ -14,6 +19,7 @@ public class User extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "user_id")
     private Long id;
 
     @Column(nullable = false)
@@ -25,15 +31,18 @@ public class User extends BaseTimeEntity {
     @Column
     private String picture;
 
-
-
-    // @Enumerated JPA로 데이터베이스로 저장할 때 Enum값을 어떤 형태로 저장할지를 경정
-    // 기본적으로는 int로 된 숫자가 저장
-    // 숫자로 저장되면 데이터베이스로 확인할 때 그 값이 무슨 코드를 의미하는지 알 수 없다.
-    // 그래서 문자열로 저장되도록 설정
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Role role;
+
+    @OneToMany(mappedBy="user")
+    private List<Bookmark> bookmarks = new ArrayList<Bookmark>();
+
+    @OneToMany(mappedBy="user")
+    private List<Comment> comments = new ArrayList<Comment>();
+
+    @OneToMany(mappedBy="user")
+    private List<Thumb> thumbs = new ArrayList<Thumb>();
 
     @Builder
     public User(String name, String email, String picture, Role role) {

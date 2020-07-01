@@ -1,12 +1,16 @@
 package com.hyunro.bookmark.domain.bookmark;
 
 import com.hyunro.bookmark.domain.BaseTimeEntity;
+import com.hyunro.bookmark.domain.comment.Comment;
+import com.hyunro.bookmark.domain.thumb.Thumb;
 import com.hyunro.bookmark.domain.user.User;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @NoArgsConstructor
@@ -15,6 +19,7 @@ public class Bookmark extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "bookmark_id")
     private Long id;
 
     @ManyToOne
@@ -43,6 +48,12 @@ public class Bookmark extends BaseTimeEntity {
     private Integer number_share;
 
     private Integer is_public;
+
+    @OneToMany(mappedBy="bookmark")
+    private List<Comment> comments = new ArrayList<Comment>();
+
+    @OneToMany(mappedBy="bookmark")
+    private List<Thumb> thumbs = new ArrayList<Thumb>();
 
     @Builder
     public Bookmark(User user, String user_name, String topic, String url, String src_title, String src_description, String content,

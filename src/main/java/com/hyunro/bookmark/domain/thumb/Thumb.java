@@ -16,6 +16,7 @@ public class Thumb extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "thumb_id")
     private Long id;
 
     @ManyToOne
