@@ -12,6 +12,7 @@ import javax.persistence.*;
 @Getter
 @NoArgsConstructor
 @Entity
+@Table(name="thumb")
 public class Thumb extends BaseTimeEntity {
 
     @Id

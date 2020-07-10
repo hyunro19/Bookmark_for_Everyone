@@ -15,21 +15,18 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 public class ThumbApiController {
 
-    private final UserRepository userRepository;
-    private final BookmarkRepository bookmarkRepository;
+
     private final ThumbService thumbService;
 
     @PostMapping("/api/v1/thumb")
     public Long save(@RequestBody ThumbSaveRequestDto requestDto, @LoginUser SessionUser sessionUser) {
         Long user_id = null;
-        User user = null;
-        Bookmark bookmark = null;
+
         if(sessionUser != null) {
             user_id = sessionUser.getId();
-            user = userRepository.getOne(user_id);
         }
-        bookmark = bookmarkRepository.getOne(requestDto.getBookmark_id());
-        return thumbService.save(requestDto, user, bookmark);
+
+        return thumbService.save(requestDto, user_id);
     }
 
     @DeleteMapping("api/v1/thumb/{id}")

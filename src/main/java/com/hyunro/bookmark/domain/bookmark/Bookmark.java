@@ -15,6 +15,7 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 @Entity
+@Table(name="bookmark")
 public class Bookmark extends BaseTimeEntity {
 
     @Id

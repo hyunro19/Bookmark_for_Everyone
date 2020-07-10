@@ -15,18 +15,15 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 public class BookmarkApiController {
 
-    private final UserRepository userRepository;
     private final BookmarkService bookmarkService;
 
     @PostMapping("/api/v1/bookmark")
     public Long save(@RequestBody BookmarkSaveRequestDto requestDto, @LoginUser SessionUser sessionUser) {
         Long user_id = null;
-        User user = null;
         if(sessionUser != null) {
             user_id = sessionUser.getId();
-            user = userRepository.getOne(user_id);
         }
-        return bookmarkService.save(requestDto, user);
+        return bookmarkService.save(requestDto, user_id);
     }
 
     @PutMapping("/api/v1/bookmark/{id}")

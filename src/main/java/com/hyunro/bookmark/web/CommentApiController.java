@@ -16,22 +16,17 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 public class CommentApiController {
 
-    private final UserRepository userRepository;
-    private final BookmarkRepository bookmarkRepository;
     private final CommentService commentService;
 
     @PostMapping("/api/v1/comment")
     public Long save(@RequestBody CommentSaveRequestDto requestDto, @LoginUser SessionUser sessionUser) {
         Long user_id = null;
-        User user = null;
-        Bookmark bookmark = null;
+
         if(sessionUser != null) {
             user_id = sessionUser.getId();
-            user = userRepository.getOne(user_id);
-            System.out.println(">>>>>>>>user : "+user_id+"<<<<<<<<<<<<<");
         }
-        bookmark = bookmarkRepository.getOne(requestDto.getBookmark_id());
-        return commentService.save(requestDto, user, bookmark);
+
+        return commentService.save(requestDto, user_id);
     }
 
     @PutMapping("/api/v1/comment/{id}")

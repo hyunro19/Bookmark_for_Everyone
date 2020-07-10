@@ -1,9 +1,11 @@
 package com.hyunro.bookmark.service.comment;
 
 import com.hyunro.bookmark.domain.bookmark.Bookmark;
+import com.hyunro.bookmark.domain.bookmark.BookmarkRepository;
 import com.hyunro.bookmark.domain.comment.Comment;
 import com.hyunro.bookmark.domain.comment.CommentRepository;
 import com.hyunro.bookmark.domain.user.User;
+import com.hyunro.bookmark.domain.user.UserRepository;
 import com.hyunro.bookmark.web.dto.comment.CommentListResponseDto;
 import com.hyunro.bookmark.web.dto.comment.CommentSaveRequestDto;
 import com.hyunro.bookmark.web.dto.comment.CommentUpdateRequestDto;
@@ -18,10 +20,15 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Service
 public class CommentService {
+
+    private final UserRepository userRepository;
+    private final BookmarkRepository bookmarkRepository;
     private final CommentRepository commentRepository;
 
     @Transactional
-    public Long save(CommentSaveRequestDto requestDto, User user, Bookmark bookmark) {
+    public Long save(CommentSaveRequestDto requestDto, Long user_id) {
+        User user = userRepository.getOne(user_id);
+        Bookmark bookmark = bookmarkRepository.getOne(requestDto.getBookmark_id());
         return commentRepository.save(requestDto.toEntity(user, bookmark)).getId();
     }
 

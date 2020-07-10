@@ -1,14 +1,17 @@
 package com.hyunro.bookmark.web;
 
 import com.hyunro.bookmark.config.auth.LoginUser;
+import com.hyunro.bookmark.config.auth.TestUserService;
 import com.hyunro.bookmark.config.auth.dto.SessionUser;
 import com.hyunro.bookmark.service.posts.PostsService;
 import com.hyunro.bookmark.web.dto.posts.PostsResponseDto;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpSession;
 
@@ -18,6 +21,7 @@ public class IndexController {
 
     private final PostsService postsService;
     private final HttpSession httpSession;
+    private final TestUserService testUserService;
 
     @GetMapping("/") // 기본으로 index를 리턴
     public String index(Model model, @LoginUser SessionUser user) {
@@ -50,4 +54,19 @@ public class IndexController {
 
         return "posts-update";
     }
+
+    @GetMapping("/test")
+    @ResponseBody
+    public String test() {
+        System.out.println("test controller");
+        String test = "{1: \"item1\", 2: \"item2\"}";
+        return test;
+    }
+
+    @GetMapping("/test_login")
+    @ResponseBody
+    public OAuth2User test_login() {
+        return testUserService.loadUser();
+    }
+
 }

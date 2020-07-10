@@ -1,9 +1,11 @@
 package com.hyunro.bookmark.service.thumb;
 
 import com.hyunro.bookmark.domain.bookmark.Bookmark;
+import com.hyunro.bookmark.domain.bookmark.BookmarkRepository;
 import com.hyunro.bookmark.domain.thumb.Thumb;
 import com.hyunro.bookmark.domain.thumb.ThumbRepository;
 import com.hyunro.bookmark.domain.user.User;
+import com.hyunro.bookmark.domain.user.UserRepository;
 import com.hyunro.bookmark.web.dto.thumb.ThumbSaveRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,10 +18,15 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Service
 public class ThumbService {
+
+    private final UserRepository userRepository;
+    private final BookmarkRepository bookmarkRepository;
     private final ThumbRepository thumbRepository;
 
     @Transactional
-    public Long save(ThumbSaveRequestDto requestDto, User user, Bookmark bookmark) {
+    public Long save(ThumbSaveRequestDto requestDto, Long user_id) {
+        User user = userRepository.getOne(user_id);
+        Bookmark bookmark = bookmarkRepository.getOne(requestDto.getBookmark_id());
         return thumbRepository.save(requestDto.toEntity(user, bookmark)).getId();
     }
 

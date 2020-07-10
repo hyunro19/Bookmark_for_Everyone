@@ -3,6 +3,7 @@ package com.hyunro.bookmark.service.bookmark;
 import com.hyunro.bookmark.domain.bookmark.Bookmark;
 import com.hyunro.bookmark.domain.bookmark.BookmarkRepository;
 import com.hyunro.bookmark.domain.user.User;
+import com.hyunro.bookmark.domain.user.UserRepository;
 import com.hyunro.bookmark.web.dto.bookmark.BookmarkListResponseDto;
 import com.hyunro.bookmark.web.dto.bookmark.BookmarkResponseDto;
 import com.hyunro.bookmark.web.dto.bookmark.BookmarkSaveRequestDto;
@@ -20,9 +21,11 @@ import java.util.stream.Collectors;
 @Service
 public class BookmarkService {
     private final BookmarkRepository bookmarkRepository;
+    private final UserRepository userRepository;
 
     @Transactional
-    public Long save(BookmarkSaveRequestDto requestDto, User user) {
+    public Long save(BookmarkSaveRequestDto requestDto, Long user_id) {
+        User user = userRepository.getOne(user_id);
         return bookmarkRepository.save(requestDto.toEntity(user)).getId();
     }
 

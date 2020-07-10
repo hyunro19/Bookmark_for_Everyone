@@ -12,6 +12,7 @@ import javax.persistence.*;
 @Getter
 @NoArgsConstructor
 @Entity
+@Table(name="comment")
 public class Comment extends BaseTimeEntity {
 
     @Id
