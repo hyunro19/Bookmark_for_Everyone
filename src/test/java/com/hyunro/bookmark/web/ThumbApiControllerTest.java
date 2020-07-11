@@ -93,7 +93,7 @@ public class ThumbApiControllerTest {
     }
 
     @Test
-    @WithMockUser(roles="USER")
+    @WithMockUser(roles="GUEST")
     public void Thumb_등록된다() throws Exception {
         //given
         Long bookmark_id = bookmark.getId();

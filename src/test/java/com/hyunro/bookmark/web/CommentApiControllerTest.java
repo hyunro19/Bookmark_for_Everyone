@@ -92,7 +92,7 @@ public class CommentApiControllerTest {
     }
 
     @Test
-    @WithMockUser(roles="USER")
+    @WithMockUser(roles="GUEST")
     public void Comment_등록된다() throws Exception {
         //given
         Long bookmark_id = bookmark.getId();
@@ -117,7 +117,7 @@ public class CommentApiControllerTest {
     }
 
     @Test
-    @WithMockUser(roles="USER")
+    @WithMockUser(roles="GUEST")
     public void Comment_수정된다() throws Exception {
         //given
         String content = "테스트 코멘트 내용";

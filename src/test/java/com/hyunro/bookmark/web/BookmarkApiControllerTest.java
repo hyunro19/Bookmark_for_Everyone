@@ -79,7 +79,7 @@ public class BookmarkApiControllerTest {
     }
 
     @Test
-    @WithMockUser(roles="USER")
+    @WithMockUser(roles="GUEST")
     public void Bookmark_등록된다() throws Exception {
         //given
         String topic = "topic";
@@ -120,7 +120,7 @@ public class BookmarkApiControllerTest {
     }
 
     @Test
-    @WithMockUser(roles="USER")
+    @WithMockUser(roles="GUEST")
     public void Bookmark_수정된다() throws Exception {
         //given
         String topic = "테스트 토픽";
