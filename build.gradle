@@ -46,7 +46,8 @@ dependencies { // 프로젝트 개발에 필요한 의존성들을 선언하는 
     // 스프링 시큐리티
     // 소셜 로그인 등 클라이언트 입장에서 소셜 기능 구현시 필요한 의존성
     compile('org.springframework.boot:spring-boot-starter-oauth2-client')
-
+    // JWT용, 이걸 사용하면 한 줄 더 아래의 session은 사용하지 않는다
+    compile group: 'io.jsonwebtoken', name: 'jjwt', version: '0.9.1'
     compile('org.springframework.session:spring-session-jdbc')
 
     // MariaDB JDBC
