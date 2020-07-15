@@ -1,11 +1,8 @@
 package com.hyunro.bookmark.web;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.hyunro.bookmark.config.auth.dto.SessionUser;
 import com.hyunro.bookmark.domain.bookmark.Bookmark;
 import com.hyunro.bookmark.domain.bookmark.BookmarkRepository;
-import com.hyunro.bookmark.domain.comment.Comment;
-import com.hyunro.bookmark.domain.comment.CommentRepository;
 import com.hyunro.bookmark.domain.thumb.Thumb;
 import com.hyunro.bookmark.domain.thumb.ThumbRepository;
 import com.hyunro.bookmark.domain.user.Role;
@@ -106,7 +103,6 @@ public class ThumbApiControllerTest {
 
         //when
         mvc.perform(post(url)
-                .sessionAttr("user", new SessionUser(user))
         .contentType(MediaType.APPLICATION_JSON_UTF8)
         .content(new ObjectMapper().writeValueAsString(requestDto)))
         .andExpect(status().isOk());

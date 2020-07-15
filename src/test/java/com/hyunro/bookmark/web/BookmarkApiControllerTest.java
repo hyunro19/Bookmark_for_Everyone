@@ -1,7 +1,6 @@
 package com.hyunro.bookmark.web;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.hyunro.bookmark.config.auth.dto.SessionUser;
 import com.hyunro.bookmark.domain.bookmark.Bookmark;
 import com.hyunro.bookmark.domain.bookmark.BookmarkRepository;
 import com.hyunro.bookmark.domain.user.Role;
@@ -19,7 +18,6 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockHttpSession;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -110,7 +108,6 @@ public class BookmarkApiControllerTest {
 
         //when
         mvc.perform(post(url)
-                .sessionAttr("user", new SessionUser(user))
         .contentType(MediaType.APPLICATION_JSON_UTF8)
         .content(new ObjectMapper().writeValueAsString(requestDto)))
         .andExpect(status().isOk());
@@ -150,7 +147,6 @@ public class BookmarkApiControllerTest {
 
         //when
         mvc.perform(put(url)
-                .sessionAttr("user", new SessionUser(user))
             .contentType(MediaType.APPLICATION_JSON_UTF8)
             .content(new ObjectMapper().writeValueAsString(requestDto)))
             .andExpect(status().isOk());

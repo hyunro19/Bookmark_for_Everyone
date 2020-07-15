@@ -1,7 +1,6 @@
 package com.hyunro.bookmark.config.auth;
 
 import com.hyunro.bookmark.config.auth.dto.OAuthAttributes;
-import com.hyunro.bookmark.config.auth.dto.SessionUser;
 import com.hyunro.bookmark.domain.user.User;
 import com.hyunro.bookmark.domain.user.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -14,7 +13,6 @@ import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
-import javax.servlet.http.HttpSession;
 import java.util.Collections;
 
 @RequiredArgsConstructor
@@ -23,7 +21,6 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
     // 구글 로그인 이후 가져온 사용자의 정보(email, name, picture)등 들을 기반으로 가입 및 정보수정, 세션 저장 등의 기능 지원
 
     private final UserRepository userRepository;
-    private final HttpSession httpSession;
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
@@ -53,22 +50,22 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
         // SessionUser
         // 세션에 사용자 정보를 저장하기 위한 Dto클래스
         // 기존 User클래스를 쓰지 않고 새로 만들어서 쓴다.
-        httpSession.setAttribute("user", new SessionUser(user));
-        // JWT을 쓰면 이 윗 라인, 세션에 저장하는 부분은 안쓸거임.
+//        httpSession.setAttribute("user", new SessionUser(user));
 
         return new DefaultOAuth2User(
                 Collections.singleton(new SimpleGrantedAuthority(user.getRoleKey())),
                 attributes.getAttributes(),
                 attributes.getNameAttributeKey());
     }
-        private User saveOrUpdate(OAuthAttributes attributes) {
-            User user = userRepository.findByEmail(
-                    attributes.getEmail())
-                    .map( entity -> entity.update(attributes.getName(), attributes.getPicture()) )
-                    .orElse(attributes.toEntity());
+    private User saveOrUpdate(OAuthAttributes attributes) {
+        User user = userRepository.findByEmail(
+                attributes.getEmail())
+                .map( entity -> entity.update(attributes.getName(), attributes.getPicture()) )
+                .orElse(attributes.toEntity());
 
-            return userRepository.save(user);
-        }
+        return userRepository.save(user);
+    }
 
 
 }
+

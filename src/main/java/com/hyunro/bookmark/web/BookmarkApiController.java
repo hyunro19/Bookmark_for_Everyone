@@ -1,9 +1,5 @@
 package com.hyunro.bookmark.web;
 
-import com.hyunro.bookmark.config.auth.LoginUser;
-import com.hyunro.bookmark.config.auth.dto.SessionUser;
-import com.hyunro.bookmark.domain.user.User;
-import com.hyunro.bookmark.domain.user.UserRepository;
 import com.hyunro.bookmark.service.bookmark.BookmarkService;
 import com.hyunro.bookmark.web.dto.bookmark.BookmarkResponseDto;
 import com.hyunro.bookmark.web.dto.bookmark.BookmarkSaveRequestDto;
@@ -18,11 +14,8 @@ public class BookmarkApiController {
     private final BookmarkService bookmarkService;
 
     @PostMapping("/api/v1/bookmark")
-    public Long save(@RequestBody BookmarkSaveRequestDto requestDto, @LoginUser SessionUser sessionUser) {
+    public Long save(@RequestBody BookmarkSaveRequestDto requestDto) {
         Long user_id = null;
-        if(sessionUser != null) {
-            user_id = sessionUser.getId();
-        }
         return bookmarkService.save(requestDto, user_id);
     }
 
