@@ -30,9 +30,8 @@ public class UserRepositoryTest {
         // 테이블 bookmark에 insert/update 쿼리를 실행 id가 있다면 update, 없다면 insert
         userRepository.save(User.builder()
                 .name("테스트 네임")
-                .email("테스트 이메일")
-                .picture("테스트 사진")
-                .role(Role.GUEST)
+                .email("hyunro19@gmail.com")
+                .password("테스트 비밀번호")
                 .build());
 
         //when
@@ -41,22 +40,20 @@ public class UserRepositoryTest {
         //then
         User user = userList.get(0);
         assertThat(user.getName()).isEqualTo("테스트 네임");
-        assertThat(user.getEmail()).isEqualTo("테스트 이메일");
-        assertThat(user.getPicture()).isEqualTo("테스트 사진");
-        assertThat(user.getRole()).isEqualTo(Role.GUEST);
+        assertThat(user.getEmail()).isEqualTo("hyunro19@gmail.com");
+        assertThat(user.getPassword()).isEqualTo("테스트 비밀번호");
     }
 
     @Test
     public void 유저_갱신하기() {
         User user = User.builder()
                 .name("테스트 네임")
-                .email("테스트 이메일")
-                .picture("테스트 사진")
-                .role(Role.GUEST)
+                .email("hyunro19@gmail.com")
+                .password("테스트 비밀번호")
                 .build();
         userRepository.save(user);
 
-        user.update("수정후 네임", "수정후 사진");
+        user.update("수정 후 네임", "수정 후 비밀번호");
         userRepository.save(user);
 
         //when
@@ -64,8 +61,8 @@ public class UserRepositoryTest {
 
         //Bookmark
         User user2 = userList.get(0);
-        assertThat(user2.getName()).isEqualTo("수정후 네임");
-        assertThat(user2.getPicture()).isEqualTo("수정후 사진");
+        assertThat(user2.getName()).isEqualTo("수정 후 네임");
+        assertThat(user2.getPassword()).isEqualTo("수정 후 비밀번호");
     }
 
 }

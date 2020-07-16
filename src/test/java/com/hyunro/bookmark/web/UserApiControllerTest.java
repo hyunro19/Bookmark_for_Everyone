@@ -1,10 +1,10 @@
 package com.hyunro.bookmark.web;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.hyunro.bookmark.domain.posts.Posts;
-import com.hyunro.bookmark.domain.posts.PostsRepository;
-import com.hyunro.bookmark.web.dto.posts.PostsSaveRequestDto;
-import com.hyunro.bookmark.web.dto.posts.PostsUpdateRequestDto;
+import com.hyunro.bookmark.domain.user.User;
+import com.hyunro.bookmark.domain.user.UserRepository;
+import com.hyunro.bookmark.web.dto.user.UserSaveRequestDto;
+import com.hyunro.bookmark.web.dto.user.UserUpdateRequestDto;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -30,7 +30,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 // @WebMvcTest는 JPA기능이 작동하지 않기 때문
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class PostsApiControllerTest {
+public class UserApiControllerTest {
 
     @LocalServerPort
     private int port;
@@ -39,7 +39,7 @@ public class PostsApiControllerTest {
     private TestRestTemplate restTemplate;
 
     @Autowired
-    private PostsRepository postsRepository;
+    private UserRepository userRepository;
 
     @Autowired
     private WebApplicationContext context;
@@ -55,21 +55,22 @@ public class PostsApiControllerTest {
 
     @After
     public void tearDown() throws Exception {
-        postsRepository.deleteAll();
+        userRepository.deleteAll();
     }
 
     @Test
-    public void createPosts() throws Exception {
+    public void createUser() throws Exception {
         //given
-        String title = "title";
-        String content = "content";
-        PostsSaveRequestDto requestDto = PostsSaveRequestDto.builder()
-                .title(title)
-                .content(content)
-                .author("author")
+        String name = "name";
+        String email = "test@gmail.com";
+        String password = "password";
+        UserSaveRequestDto requestDto = UserSaveRequestDto.builder()
+                .name(name)
+                .email(email)
+                .password(password)
                 .build();
 
-        String url = "http://localhost:"+port+"/api/v1/posts";
+        String url = "http://localhost:"+port+"/api/v1/user";
 
 //        //when
 //        ResponseEntity<Long> responseEntity = restTemplate.postForEntity(url, requestDto, Long.class);
@@ -84,32 +85,33 @@ public class PostsApiControllerTest {
         .content(new ObjectMapper().writeValueAsString(requestDto)))
         .andExpect(status().isOk());
 
-        List<Posts> all = postsRepository.findAll();
-        assertThat(all.get(0).getTitle()).isEqualTo(title);
-        assertThat(all.get(0).getContent()).isEqualTo(content);
+        List<User> all = userRepository.findAll();
+        assertThat(all.get(0).getName()).isEqualTo(name);
+        assertThat(all.get(0).getEmail()).isEqualTo(email);
+        assertThat(all.get(0).getPassword()).isEqualTo(password);
     }
 
     @Test
-    public void updatePosts() throws Exception {
+    public void updateUser() throws Exception {
         //given
-        Posts savedPosts = postsRepository.save(Posts.builder()
-            .title("title")
-            .content("content")
-            .author("author")
+        User savedUser = userRepository.save(User.builder()
+            .name("name")
+            .email("test@gmail.com")
+            .password("password")
             .build());
 
-        Long updateId = savedPosts.getId();
-        String expectedTitle = "title2";
-        String expectedContent = "content2";
+        Long updateId = savedUser.getId();
+        String expectedName = "name2";
+        String expectedPassword = "password2";
 
-        PostsUpdateRequestDto requestDto = PostsUpdateRequestDto.builder()
-                .title(expectedTitle)
-                .content(expectedContent)
+        UserUpdateRequestDto requestDto = UserUpdateRequestDto.builder()
+                .name(expectedName)
+                .password(expectedPassword)
                 .build();
 
-        String url = "http://localhost:"+port+"/api/v1/posts/"+updateId;
+        String url = "http://localhost:"+port+"/api/v1/user/"+updateId;
 
-        HttpEntity<PostsUpdateRequestDto> requestEntity = new HttpEntity<>(requestDto);
+        HttpEntity<UserUpdateRequestDto> requestEntity = new HttpEntity<>(requestDto);
 
 //        //when
 //        ResponseEntity<Long> responseEntity = restTemplate.exchange(url, HttpMethod.PUT, requestEntity, Long.class);
@@ -123,9 +125,9 @@ public class PostsApiControllerTest {
         .contentType(MediaType.APPLICATION_JSON_UTF8)
         .content(new ObjectMapper().writeValueAsString(requestDto)))
         .andExpect(status().isOk());
-        List<Posts> all = postsRepository.findAll();
-        assertThat(all.get(0).getTitle()).isEqualTo(expectedTitle);
-        assertThat(all.get(0).getContent()).isEqualTo(expectedContent);
+        List<User> all = userRepository.findAll();
+        assertThat(all.get(0).getName()).isEqualTo(expectedName);
+        assertThat(all.get(0).getPassword()).isEqualTo(expectedPassword);
 
     }
 
