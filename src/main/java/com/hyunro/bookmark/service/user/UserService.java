@@ -24,13 +24,25 @@ public class UserService {
     @Transactional
     public Long update(Long id, UserUpdateRequestDto requestDto) {
         User user = userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("해당 사용자가 없습니다. id="+id));
-        user.update(requestDto.getName(), requestDto.getPassword());
+        user.update(requestDto);
         return id;
     }
 
     public UserResponseDto findById(Long id) {
         User entity = userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException(("해당 사용자가 없습니다. id="+id)));
         return new UserResponseDto(entity);
+    }
+
+    public User findByEmail(String email) {
+        User entity = userRepository.findByEmail(email);
+        if(entity==null) throw new IllegalArgumentException(("해당 사용자가 없습니다. email="+email));
+        return entity;
+    }
+
+    public User findByName(String name) {
+        User entity = userRepository.findByName(name);
+        if(entity==null) throw new IllegalArgumentException(("해당 사용자가 없습니다. email="+name));
+        return entity;
     }
 
     @Transactional

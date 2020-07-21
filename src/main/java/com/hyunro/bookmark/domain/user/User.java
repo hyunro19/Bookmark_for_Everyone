@@ -2,6 +2,7 @@ package com.hyunro.bookmark.domain.user;
 
 import com.hyunro.bookmark.domain.BaseTimeEntity;
 
+import com.hyunro.bookmark.web.dto.user.UserUpdateRequestDto;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -50,9 +51,13 @@ public class User extends BaseTimeEntity {
         this.password = password;
     }
 
-    public User update(String name, String password) {
-        this.name = name;
-        this.password = password;
+    public User update(UserUpdateRequestDto requestDto) {
+        if (requestDto.getName_new() != null) {
+            this.name = requestDto.getName_new();
+        }
+        if (requestDto.getPassword_new() != null) {
+            this.password = requestDto.getPassword_new();
+        }
         return this;
     }
 

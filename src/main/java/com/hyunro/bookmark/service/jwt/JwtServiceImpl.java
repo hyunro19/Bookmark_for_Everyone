@@ -21,7 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 @Service("jwtService")
 public class JwtServiceImpl implements JwtService{
 
-    private static final String SALT =  "luvookSecret";
+    private static final String SALT =  "bookmarkForEveryoneSecret";
 
     @Override
     public <T> String create(String key, T data, String subject){
@@ -32,7 +32,7 @@ public class JwtServiceImpl implements JwtService{
                 .claim(key, data)
                 .signWith(SignatureAlgorithm.HS256, this.generateKey())
                 .compact();
-        System.out.println("---------------token @ create: "+jwt);
+
         return jwt;
     }
 
@@ -68,15 +68,11 @@ public class JwtServiceImpl implements JwtService{
             }
             throw new UnauthorizedException();
 
-            /*개발환경!!!
-             * return false;*/
-
         }
     }
 
     @Override
     public Map<String, Object> get(String key) {
-        System.out.println("---------------token @ get: "+key);
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
         String jwt = request.getHeader("Authorization");
         Jws<Claims> claims = null;
@@ -103,7 +99,7 @@ public class JwtServiceImpl implements JwtService{
     }
 
     @Override
-    public int getMemberId() {
-        return (int)this.get("member").get("memberId");
+    public int getUserId() {
+        return (int)this.get("user").get("userId");
     }
 }
