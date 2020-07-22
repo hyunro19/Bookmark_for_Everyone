@@ -10,7 +10,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 public class WebConfig implements WebMvcConfigurer{
     private static final String[] EXCLUDE_PATHS = {
-//            "",
+            "/api/v1/user",
+            "/api/v1/login",
 //            "/**",
 //            "/member/**",
 //            "/error/**"
@@ -29,8 +30,10 @@ public class WebConfig implements WebMvcConfigurer{
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins("http://localhost:3000")
-                .exposedHeaders("jwt_token") // CORS일 때, 해당 헤더를 읽을 수 있게 처리해준다.
+                .allowedOrigins("*")
+                .exposedHeaders("Authorization") // CORS일 때, 해당 헤더를 읽을 수 있게 처리해준다.
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH", "HEAD");
+//                .allowedHeaders("jwt_token");
+
     }
 }

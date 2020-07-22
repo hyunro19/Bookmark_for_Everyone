@@ -35,13 +35,13 @@ public class UserService {
 
     public User findByEmail(String email) {
         User entity = userRepository.findByEmail(email);
-        if(entity==null) throw new IllegalArgumentException(("해당 사용자가 없습니다. email="+email));
+//        if(entity==null) throw new IllegalArgumentException(("해당 사용자가 없습니다. email="+email));
         return entity;
     }
 
     public User findByName(String name) {
         User entity = userRepository.findByName(name);
-        if(entity==null) throw new IllegalArgumentException(("해당 사용자가 없습니다. email="+name));
+//        if(entity==null) throw new IllegalArgumentException(("해당 사용자가 없습니다. email="+name));
         return entity;
     }
 

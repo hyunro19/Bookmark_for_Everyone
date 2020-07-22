@@ -4,10 +4,7 @@ import com.hyunro.bookmark.domain.user.User;
 import com.hyunro.bookmark.service.jwt.JwtService;
 import com.hyunro.bookmark.service.user.UserService;
 import com.hyunro.bookmark.web.dto.Result;
-import com.hyunro.bookmark.web.dto.user.UserLoginRequestDto;
-import com.hyunro.bookmark.web.dto.user.UserResponseDto;
-import com.hyunro.bookmark.web.dto.user.UserSaveRequestDto;
-import com.hyunro.bookmark.web.dto.user.UserUpdateRequestDto;
+import com.hyunro.bookmark.web.dto.user.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,32 +19,44 @@ public class UserApiController {
     private final UserService userService;
 
     @PostMapping("/api/v1/login")
-    public Result login(@RequestBody UserLoginRequestDto requestDto, HttpServletResponse response) {
-        Result result = Result.successInstance();
-
+    public UserLoginResponseDto login(@RequestBody UserLoginRequestDto requestDto, HttpServletResponse response) {
+        UserLoginResponseDto responseDto = null;
         User loginUser = null;
-        UserResponseDto responseDto = null;
-        try {
-            loginUser = userService.findByEmail(requestDto.getEmail());
-            responseDto = new UserResponseDto(loginUser);
-        } catch (Exception e) {
-            result.fail();
-            return result;
-        }
-        if(loginUser==null) {
-            result.fail();
+
+        loginUser = userService.findByEmail(requestDto.getEmail());
+        if (loginUser==null || !loginUser.getPassword().equals(requestDto.getPassword())) {
+            return new UserLoginResponseDto();
         }
         String jwt_token = jwtService.create("user", loginUser, "user");
-        response.setHeader("jwt_token", jwt_token);
+        response.setHeader("Authorization", jwt_token);
 //        System.out.println("login"+", "+jwt_token);
-        result.setData(responseDto);
-        return result;
+        return new UserLoginResponseDto(loginUser);
     }
 
-    @GetMapping("/api/v1/user/{id}")
-    public UserResponseDto findById (@PathVariable Long id) {
-        return userService.findById(id);
+    @GetMapping("/api/v1/user")
+    @ResponseBody
+    public Boolean findBy(String name, String email) {
+        if (name != null && !name.equals("")) {
+            User user = userService.findByName(name);
+            System.out.println(name);
+            System.out.println(user);
+            if (user!=null) return true;
+        } else if (email != null && !email.equals("")) {
+            User user = userService.findByEmail(email);
+            System.out.println(email);
+            System.out.println(user);
+            if (user!=null) return true;
+        }
+        return false;
     }
+
+//    @GetMapping("/api/v1/user/email}")
+//    @ResponseBody
+//    public Boolean findByEmail (String email) {
+//        User user = userService.findByEmail(email);
+//        if (user==null) return true;
+//        return false;
+//    }
 
     @PostMapping("/api/v1/user")
     public Result save(@RequestBody UserSaveRequestDto requestDto,  HttpServletResponse response) {
@@ -62,7 +71,7 @@ public class UserApiController {
             return result;
         }
         String jwt_token = jwtService.create("user", loginUser, "user");
-        response.setHeader("jwt_token", jwt_token);
+        response.setHeader("Authorization", jwt_token);
 //        System.out.println("register"+", "+jwt_token);
         result.setData(responseDto);
         return result;
@@ -70,16 +79,18 @@ public class UserApiController {
 
     @PutMapping("/api/v1/user")
     @ResponseBody
-    public String update(@RequestBody UserUpdateRequestDto requestDto, HttpServletResponse response) {
-        
-        Result result = Result.successInstance();
-        try {
-            User user = userService.findByEmail(requestDto.getEmail());
-            if (user.getPassword().equals(requestDto.getPassword_old())) {
-                user.update(requestDto);
-            } else {
-                throw new Exception();
+    public String update(@RequestBody UserUpdateRequestDto requestDto) {
+        if (requestDto.getName_new() != null) { // 닉네임 변경
+            if (userService.findByName(requestDto.getName_new()) != null) {
+                return "이미 사용중인 닉네임입니다.";
             }
+        }
+        User user = userService.findByEmail(requestDto.getEmail());
+        if(requestDto.getPassword_old()!=user.getPassword()) {
+            return "비밀번호가 틀렸습니다.";
+        }
+        try {
+            user.update(requestDto);
         } catch (Exception e) {
             return "변경 실패";
         }

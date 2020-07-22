@@ -105,8 +105,8 @@ public class UserApiControllerTest {
         String expectedPassword = "password2";
 
         UserUpdateRequestDto requestDto = UserUpdateRequestDto.builder()
-                .name(expectedName)
-                .password(expectedPassword)
+                .name_new(expectedName)
+                .password_new(expectedPassword)
                 .build();
 
         String url = "http://localhost:"+port+"/api/v1/user/"+updateId;

@@ -1,11 +1,15 @@
 package com.hyunro.bookmark.web;
 
 import com.hyunro.bookmark.service.posts.PostsService;
+import com.hyunro.bookmark.web.dto.posts.PostsListResponseDto;
 import com.hyunro.bookmark.web.dto.posts.PostsResponseDto;
 import com.hyunro.bookmark.web.dto.posts.PostsSaveRequestDto;
 import com.hyunro.bookmark.web.dto.posts.PostsUpdateRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
@@ -15,6 +19,11 @@ public class PostsApiController {
     // final이 선언도니 모든 필드를 인자값으로 하는 생성자를 롬복의 @RequiredArgsConstructor가 대신 생성해 줌
     private final PostsService postsService;
 
+    @GetMapping("api/v1/posts")
+    public List<PostsListResponseDto> findAllDesc(HttpServletResponse response) {
+        response.setHeader("Access-Control-Allow-Origin", "*");
+        return postsService.findAllDesc();
+    }
     @PostMapping("/api/v1/posts")
     public Long save(@RequestBody PostsSaveRequestDto requestDto) {
         return postsService.save(requestDto);
