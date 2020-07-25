@@ -2,6 +2,7 @@ package com.hyunro.bookmark.domain.user;
 
 import com.hyunro.bookmark.domain.BaseTimeEntity;
 
+import com.hyunro.bookmark.domain.posts.Posts;
 import com.hyunro.bookmark.web.dto.user.UserUpdateRequestDto;
 import lombok.Builder;
 import lombok.Getter;
@@ -34,10 +35,10 @@ public class User extends BaseTimeEntity {
 
     @Column(nullable = false)
     private String password;
-//
-//    @OneToMany(mappedBy="user")
-//    private List<Bookmark> bookmarks = new ArrayList<Bookmark>();
-//
+
+    @OneToMany(mappedBy="user")
+    private List<Posts> posts = new ArrayList<Posts>();
+
 //    @OneToMany(mappedBy="user")
 //    private List<Comment> comments = new ArrayList<Comment>();
 //

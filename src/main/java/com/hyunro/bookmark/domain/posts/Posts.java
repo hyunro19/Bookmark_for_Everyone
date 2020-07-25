@@ -18,6 +18,8 @@ public class Posts extends BaseTimeEntity { // 실제 DB의 테이블과 매칭�
     @GeneratedValue(strategy = GenerationType.IDENTITY) // PK생성 규칙을 나타낸다. GenerationType.IDENTITY하면 Auto-Increment
     private Long posts_id;
 
+    private String topic;
+
     @Column(length = 500, nullable = false)
     private String src_url;
 
@@ -33,7 +35,7 @@ public class Posts extends BaseTimeEntity { // 실제 DB의 테이블과 매칭�
     private User user;
 
     @Builder // 해당 클래스의 빌더 패턴 클래스 생성 // 생성자 상단에 선언시 생성자에 포함된 필드만 빌더에 포함
-    public Posts(String user_name, String src_url, String src_title, String src_description, User user) {
+    public Posts(String user_name, String topic, String src_url, String src_title, String src_description, User user) {
         this.user_name = user_name;
         this.src_url = src_url;
         this.src_title = src_title;
@@ -44,7 +46,8 @@ public class Posts extends BaseTimeEntity { // 실제 DB의 테이블과 매칭�
     // Entity클래스에서는 절대 Setter 메소드를 만들지 않는다.
     // 해당 필드의 값 변경이 필요하면 명확히 그 목적과 의도를 나타낼 수 있는 메소드를 추가.
 
-    public void update(String src_url, String src_title, String src_description) {
+    public void update(String topic, String src_url, String src_title, String src_description) {
+        this.topic = topic;
         this.src_url = src_url;
         this.src_title = src_title;
         this.src_description = src_description;

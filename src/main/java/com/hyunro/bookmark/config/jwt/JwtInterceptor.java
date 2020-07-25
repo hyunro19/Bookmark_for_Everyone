@@ -28,10 +28,7 @@ public class JwtInterceptor implements HandlerInterceptor{
         }
 
         System.out.println("prehandle, "+token);
-        Map<String, Object> map = jwtService.get("user");
-        for(String s: map.keySet()) {
-            System.out.println(s+", "+map.get(s));
-        }
+
 //        if(token != null && jwtService.isUsable(token)){
 //            return true;
 //        }else{

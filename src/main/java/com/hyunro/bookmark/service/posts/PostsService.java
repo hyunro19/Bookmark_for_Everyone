@@ -2,6 +2,8 @@ package com.hyunro.bookmark.service.posts;
 
 import com.hyunro.bookmark.domain.posts.Posts;
 import com.hyunro.bookmark.domain.posts.PostsRepository;
+import com.hyunro.bookmark.domain.user.User;
+import com.hyunro.bookmark.domain.user.UserRepository;
 import com.hyunro.bookmark.web.dto.posts.PostsListResponseDto;
 import com.hyunro.bookmark.web.dto.posts.PostsResponseDto;
 import com.hyunro.bookmark.web.dto.posts.PostsSaveRequestDto;
@@ -11,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 
@@ -18,16 +21,19 @@ import java.util.stream.Collectors;
 @Service
 public class PostsService {
     private final PostsRepository postsRepository;
+    private final UserRepository userRepository;
 
     @Transactional
     public Long save(PostsSaveRequestDto requestDto) {
-        return postsRepository.save(requestDto.toEntity()).getId();
+        User user = userRepository.findById(requestDto.getUser_id()).get();
+        Posts posts = requestDto.toEntity(user);
+        return postsRepository.save(posts).getPosts_id();
     }
 
     @Transactional
     public Long update(Long id, PostsUpdateRequestDto requestDto) {
         Posts posts = postsRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("해당 사용자가 없습니다. id="+id));
-        posts.update(requestDto.getTitle(), requestDto.getContent());
+        posts.update(requestDto.getTopic(), requestDto.getSrc_url(), requestDto.getSrc_title(), requestDto.getSrc_description());
         return id;
     }
 
