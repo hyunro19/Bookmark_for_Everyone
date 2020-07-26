@@ -1,20 +1,21 @@
 package com.hyunro.bookmark.web.dto.user;
 
 import com.hyunro.bookmark.domain.user.User;
+import lombok.Builder;
 import lombok.Getter;
 
 @Getter
-public class UserLoginResponseDto {
+public class UserSaveResponseDto {
 
     private Long user_id;
     private boolean logged = false;
 
     // Constructor
-    public UserLoginResponseDto() {
+    public UserSaveResponseDto() {
 
     }
 
-    public UserLoginResponseDto(User entity) {
+    public UserSaveResponseDto(User entity) {
         this.user_id = entity.getUser_id();
         this.logged = true;
     }

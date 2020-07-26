@@ -74,7 +74,7 @@ public class JwtServiceImpl implements JwtService{
     @Override
     public Map<String, Object> get(String key) {
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
-        String jwt = request.getHeader("Authorization");
+        String jwt = request.getHeader("authorization");
         Jws<Claims> claims = null;
         try {
             claims = Jwts.parser()
@@ -99,7 +99,10 @@ public class JwtServiceImpl implements JwtService{
     }
 
     @Override
-    public int getUserId() {
-        return (int)this.get("user").get("userId");
+    public Long getUserId() {
+        Map<String, Object> map = this.get("user");
+        for(String s : map.keySet())
+            System.out.println(s+" : "+map.get(s).toString());
+        return Long.valueOf(this.get("user").get("user_id").toString());
     }
 }

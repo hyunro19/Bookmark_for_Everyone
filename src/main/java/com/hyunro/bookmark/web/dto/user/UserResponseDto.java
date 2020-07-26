@@ -8,13 +8,13 @@ import lombok.Getter;
 public class UserResponseDto {
 
     private final Long user_id;
-    private final String name;
+    private final String user_name;
     private final String email;
 
     // Constructor
     public UserResponseDto(User entity) {
-        this.user_id = entity.getId();
-        this.name = entity.getName();
+        this.user_id = entity.getUser_id();
+        this.user_name = entity.getName();
         this.email = entity.getEmail();
     }
 }

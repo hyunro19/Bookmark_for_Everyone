@@ -55,6 +55,8 @@ dependencies { // 프로젝트 개발에 필요한 의존성들을 선언하는 
     testCompile('org.springframework.boot:spring-boot-starter-test')
     testCompile('org.springframework.security:spring-security-test')
 
+    // Jsoup
+    compile("org.jsoup:jsoup:1.11.3")
 }
 
 // 이렇게 관리할 경우 각 라이브러리들의 버전 관리가 한 곳에 집중되고,

@@ -8,11 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
-import java.util.Map;
-
 @Component
 public class JwtInterceptor implements HandlerInterceptor{
-    private static final String HEADER_AUTH = "Authorization";
+    private static final String HEADER_AUTH = "authorization";
 
     @Autowired
     private JwtService jwtService;
@@ -23,11 +21,11 @@ public class JwtInterceptor implements HandlerInterceptor{
 
         final String token = request.getHeader(HEADER_AUTH);
         if (request.getMethod().equals("OPTIONS")) {
-            System.out.println("OPTIONS");
+//            System.out.println("OPTIONS");
             return true;
         }
 
-        System.out.println("prehandle, "+token);
+//        System.out.println("prehandle, "+token);
 
 //        if(token != null && jwtService.isUsable(token)){
 //            return true;

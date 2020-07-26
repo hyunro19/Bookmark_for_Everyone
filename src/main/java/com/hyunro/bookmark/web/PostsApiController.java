@@ -2,14 +2,17 @@ package com.hyunro.bookmark.web;
 
 import com.hyunro.bookmark.service.jwt.JwtService;
 import com.hyunro.bookmark.service.posts.PostsService;
-import com.hyunro.bookmark.web.dto.posts.PostsListResponseDto;
-import com.hyunro.bookmark.web.dto.posts.PostsResponseDto;
-import com.hyunro.bookmark.web.dto.posts.PostsSaveRequestDto;
-import com.hyunro.bookmark.web.dto.posts.PostsUpdateRequestDto;
+import com.hyunro.bookmark.web.dto.posts.*;
 import lombok.RequiredArgsConstructor;
+import org.jsoup.Connection;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -21,6 +24,37 @@ public class PostsApiController {
     private final PostsService postsService;
     private final JwtService jwtService;
 
+    @GetMapping("api/v1/posts_url")
+    public PostsUrlResponseDto requetPostsUrl(String src_url) {
+        System.out.println(src_url);
+//        src_url = requestDto.getSrc_url();
+        String src_title = null;
+        String src_description = null;
+        String src_img = null;
+
+        // 이미지 주소를 담을 리스트 생성
+        try {
+            Document document = Jsoup.connect(src_url).get();
+
+            Element meta_title = document.select("meta[property=og:title]").first();
+            Element meta_description = document.select("meta[property=og:description]").first();
+            Element meta_image = document.select("meta[property=og:image]").first();
+
+            src_title = meta_title.attr("content");
+            src_description = meta_description.attr("content");
+            src_img = meta_image.attr("content");
+
+        }catch(IOException e){
+            e.printStackTrace();
+        }
+
+        return PostsUrlResponseDto.builder()
+                .src_title(src_title)
+                .src_description(src_description)
+                .src_img(src_img)
+                .build();
+    }
+
     @GetMapping("api/v1/posts")
     public List<PostsListResponseDto> findAllDesc(HttpServletResponse response) {
         return postsService.findAllDesc();
@@ -29,7 +63,7 @@ public class PostsApiController {
     @PostMapping("/api/v1/posts")
     public Long save(@RequestBody PostsSaveRequestDto requestDto) {
         // request의 userid랑 같은지 확인
-        Long token_id = Long.valueOf( (Integer)jwtService.get("user").get("id") );
+        Long token_id = Long.valueOf( (Integer)jwtService.get("user").get("user_id") );
         Long request_id = requestDto.getUser_id();
         System.out.println("token_id : "+token_id+", request_id : "+request_id);
         if (token_id != request_id) return 0L;

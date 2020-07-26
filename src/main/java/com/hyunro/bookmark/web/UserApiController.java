@@ -28,26 +28,16 @@ public class UserApiController {
             return new UserLoginResponseDto();
         }
         String jwt_token = jwtService.create("user", loginUser, "user");
-        response.setHeader("Authorization", jwt_token);
+        response.setHeader("authorization", jwt_token);
 //        System.out.println("login"+", "+jwt_token);
         return new UserLoginResponseDto(loginUser);
     }
 
     @GetMapping("/api/v1/user")
-    @ResponseBody
-    public Boolean findBy(String name, String email) {
-        if (name != null && !name.equals("")) {
-            User user = userService.findByName(name);
-            System.out.println(name);
-            System.out.println(user);
-            if (user!=null) return true;
-        } else if (email != null && !email.equals("")) {
-            User user = userService.findByEmail(email);
-            System.out.println(email);
-            System.out.println(user);
-            if (user!=null) return true;
-        }
-        return false;
+    public UserResponseDto findBy() {
+        Long user_id = jwtService.getUserId();
+        System.out.println("get user "+user_id);
+        return userService.findById(user_id);
     }
 
 //    @GetMapping("/api/v1/user/email}")
@@ -59,22 +49,21 @@ public class UserApiController {
 //    }
 
     @PostMapping("/api/v1/user")
-    public Result save(@RequestBody UserSaveRequestDto requestDto,  HttpServletResponse response) {
-        Result result = Result.successInstance();
-        User loginUser = null;
-        UserResponseDto responseDto = null;
+    public UserSaveResponseDto save(@RequestBody UserSaveRequestDto requestDto,  HttpServletResponse response) {
+        User createdUser = null;
+        UserSaveResponseDto responseDto = null;
         try {
-            loginUser = userService.save(requestDto);
-            responseDto = new UserResponseDto(loginUser);
+            createdUser = userService.save(requestDto);
+            responseDto = new UserSaveResponseDto(createdUser);
+            String jwt_token = jwtService.create("user", createdUser, "user");
+            response.setHeader("authorization", jwt_token);
+            //  System.out.println("register"+", "+jwt_token);
         } catch (Exception e) {
-            result.fail();
-            return result;
+            responseDto = new UserSaveResponseDto();
+            return responseDto;
         }
-        String jwt_token = jwtService.create("user", loginUser, "user");
-        response.setHeader("Authorization", jwt_token);
-//        System.out.println("register"+", "+jwt_token);
-        result.setData(responseDto);
-        return result;
+
+        return responseDto;
     }
 
     @PutMapping("/api/v1/user")
