@@ -34,19 +34,22 @@ public class UserApiController {
     }
 
     @GetMapping("/api/v1/user")
-    public UserResponseDto findBy() {
+    public UserResponseDto getUserInfo() {
         Long user_id = jwtService.getUserId();
-        System.out.println("get user "+user_id);
         return userService.findById(user_id);
     }
 
-//    @GetMapping("/api/v1/user/email}")
-//    @ResponseBody
-//    public Boolean findByEmail (String email) {
-//        User user = userService.findByEmail(email);
-//        if (user==null) return true;
-//        return false;
-//    }
+    @GetMapping("/api/v1/user/if_exists")
+    public boolean ifExists(String email, String name) {
+        User user = null;
+        if (email!="" && email!=null) {
+            user = userService.findByEmail(email);
+        } else if (name!="" && name!=null) {
+            user = userService.findByName(name);
+        }
+        if (user==null) return false;
+        else return true;
+    }
 
     @PostMapping("/api/v1/user")
     public UserSaveResponseDto save(@RequestBody UserSaveRequestDto requestDto,  HttpServletResponse response) {
@@ -67,23 +70,32 @@ public class UserApiController {
     }
 
     @PutMapping("/api/v1/user")
-    @ResponseBody
-    public String update(@RequestBody UserUpdateRequestDto requestDto) {
-        if (requestDto.getName_new() != null) { // 닉네임 변경
+    public String update(@RequestBody UserUpdateRequestDto requestDto, HttpServletResponse response) {
+        System.out.println(requestDto.getEmail());
+        System.out.println(requestDto.getName_new());
+        System.out.println(requestDto.getPassword_old());
+        System.out.println(requestDto.getPassword_new());
+        User user = userService.findByEmail(requestDto.getEmail());
+        if(!requestDto.getPassword_old().equals(user.getPassword())) {
+            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            return "비밀번호가 틀렸습니다.";
+        }
+
+        // 닉네임 변경
+        if (requestDto.getName_new() != null && !requestDto.getName_new().equals("")) {
             if (userService.findByName(requestDto.getName_new()) != null) {
+                response.setStatus(HttpServletResponse.SC_FORBIDDEN);
                 return "이미 사용중인 닉네임입니다.";
             }
         }
-        User user = userService.findByEmail(requestDto.getEmail());
-        if(requestDto.getPassword_old()!=user.getPassword()) {
-            return "비밀번호가 틀렸습니다.";
-        }
+
         try {
-            user.update(requestDto);
+            userService.update(user.getUser_id(), requestDto);
         } catch (Exception e) {
-            return "변경 실패";
+            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            return "변경에 실패하였습니다.\n다시 시도해주세요.";
         }
-        return "변경 완료";
+        return "변경을 완료하였습니다.";
     }
 
     @DeleteMapping("api/v1/user/{id}")

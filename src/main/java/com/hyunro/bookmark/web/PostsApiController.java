@@ -26,6 +26,9 @@ public class PostsApiController {
 
     @GetMapping("api/v1/posts_url")
     public PostsUrlResponseDto requetPostsUrl(String src_url) {
+        if(!src_url.startsWith("http")) {
+            src_url = "http://"+src_url;
+        }
         System.out.println(src_url);
 //        src_url = requestDto.getSrc_url();
         String src_title = null;
@@ -40,33 +43,52 @@ public class PostsApiController {
             Element meta_description = document.select("meta[property=og:description]").first();
             Element meta_image = document.select("meta[property=og:image]").first();
 
-            src_title = meta_title.attr("content");
-            src_description = meta_description.attr("content");
-            src_img = meta_image.attr("content");
+            if(meta_title != null) {
+                src_title = meta_title.attr("content");
+            }
+            if(meta_description != null) {
+                src_description = meta_description.attr("content");
+            }
+            if(meta_image != null) {
+                src_img = meta_image.attr("content");
+            }
+
 
         }catch(IOException e){
             e.printStackTrace();
         }
 
         return PostsUrlResponseDto.builder()
+                .src_url(src_url)
                 .src_title(src_title)
                 .src_description(src_description)
                 .src_img(src_img)
                 .build();
     }
 
-    @GetMapping("api/v1/posts")
-    public List<PostsListResponseDto> findAllDesc(HttpServletResponse response) {
-        return postsService.findAllDesc();
+    @GetMapping("api/v1/posts_list/{sort}")
+    public List<PostsListResponseDto> findAllDesc(@PathVariable("sort") String sort) {
+        System.out.println("PathVariable sort : "+sort);
+        if (sort.equals("recent")) {
+            return postsService.findAllDesc();
+        } else if (sort.equals("my")) {
+            Long user_id = jwtService.getUserId();
+//            return postsService.findAllByTopic(sort);
+            return postsService.findAllByUserId(user_id);
+        } else {
+            return postsService.findAllByTopic(sort);
+        }
+
+
     }
 
     @PostMapping("/api/v1/posts")
     public Long save(@RequestBody PostsSaveRequestDto requestDto) {
         // request의 userid랑 같은지 확인
-        Long token_id = Long.valueOf( (Integer)jwtService.get("user").get("user_id") );
-        Long request_id = requestDto.getUser_id();
-        System.out.println("token_id : "+token_id+", request_id : "+request_id);
-        if (token_id != request_id) return 0L;
+//        Long token_id = Long.valueOf( (Integer)jwtService.get("user").get("user_id") );
+//        Long request_id = requestDto.getUser_id();
+//        System.out.println("token_id : "+token_id+", request_id : "+request_id);
+//        if (token_id != request_id) return 0L;
 
         return postsService.save(requestDto);
     }

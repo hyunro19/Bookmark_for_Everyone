@@ -15,19 +15,23 @@ public class PostsSaveRequestDto {
     private String src_url;
     private String src_title;
     private String src_description;
+    private String src_img;
+
 
 
     @Builder
-    public PostsSaveRequestDto(Long user_id, String user_name, String topic, String src_url, String src_title, String src_description) {
+    public PostsSaveRequestDto(Long user_id, String user_name, String topic, String src_url, String src_title, String src_description, String src_img) {
         this.user_id = user_id;
         this.user_name = user_name;
         this.topic = topic;
         this.src_url = src_url;
         this.src_title = src_title;
         this.src_description = src_description;
+        this.src_img = src_img;
     }
 
     public Posts toEntity(User user) {
+        System.out.println("toentity---------topic : "+topic);
         return Posts.builder()
                 .user(user)
                 .user_name(user_name)
@@ -35,6 +39,7 @@ public class PostsSaveRequestDto {
                 .src_url(src_url)
                 .src_title(src_title)
                 .src_description(src_description)
+                .src_img(src_img)
                 .build();
     }
 }

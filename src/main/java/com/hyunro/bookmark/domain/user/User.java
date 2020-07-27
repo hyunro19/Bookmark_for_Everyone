@@ -53,10 +53,10 @@ public class User extends BaseTimeEntity {
     }
 
     public User update(UserUpdateRequestDto requestDto) {
-        if (requestDto.getName_new() != null) {
+        if (requestDto.getName_new() != null && !requestDto.getName_new().equals("")) {
             this.name = requestDto.getName_new();
         }
-        if (requestDto.getPassword_new() != null) {
+        if (requestDto.getPassword_new() != null && !requestDto.getPassword_new().equals("")) {
             this.password = requestDto.getPassword_new();
         }
         return this;

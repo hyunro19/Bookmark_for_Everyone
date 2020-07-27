@@ -28,18 +28,23 @@ public class Posts extends BaseTimeEntity { // 실제 DB의 테이블과 매칭�
     @Column(length = 500)
     private String src_description;
 
-    private String user_name;
+    @Column(length = 500)
+    private String src_img;
 
     @ManyToOne
     @JoinColumn(name = "user_id", updatable = false)
     private User user;
 
+    private String user_name;
+
     @Builder // 해당 클래스의 빌더 패턴 클래스 생성 // 생성자 상단에 선언시 생성자에 포함된 필드만 빌더에 포함
-    public Posts(String user_name, String topic, String src_url, String src_title, String src_description, User user) {
+    public Posts(String user_name, String topic, String src_url, String src_title, String src_description, String src_img, User user) {
         this.user_name = user_name;
+        this.topic = topic;
         this.src_url = src_url;
         this.src_title = src_title;
         this.src_description = src_description;
+        this.src_img = src_img;
         this.user = user;
     }
 
@@ -51,5 +56,6 @@ public class Posts extends BaseTimeEntity { // 실제 DB의 테이블과 매칭�
         this.src_url = src_url;
         this.src_title = src_title;
         this.src_description = src_description;
+        this.src_img = src_img;
     }
 }
