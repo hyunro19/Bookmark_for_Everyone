@@ -11,7 +11,7 @@ public class UserResponseDto {
     private final String user_name;
     private final String email;
 
-    // Constructor
+    @Builder
     public UserResponseDto(User entity) {
         this.user_id = entity.getUser_id();
         this.user_name = entity.getName();

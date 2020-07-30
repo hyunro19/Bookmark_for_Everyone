@@ -39,12 +39,6 @@ public class User extends BaseTimeEntity {
     @OneToMany(mappedBy="user")
     private List<Posts> posts = new ArrayList<Posts>();
 
-//    @OneToMany(mappedBy="user")
-//    private List<Comment> comments = new ArrayList<Comment>();
-//
-//    @OneToMany(mappedBy="user")
-//    private List<Thumb> thumbs = new ArrayList<Thumb>();
-
     @Builder
     public User(String name, String email, String password) {
         this.name = name;

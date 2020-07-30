@@ -31,7 +31,6 @@ public class PostsSaveRequestDto {
     }
 
     public Posts toEntity(User user) {
-        System.out.println("toentity---------topic : "+topic);
         return Posts.builder()
                 .user(user)
                 .user_name(user_name)

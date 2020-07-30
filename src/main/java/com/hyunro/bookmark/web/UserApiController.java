@@ -3,7 +3,6 @@ package com.hyunro.bookmark.web;
 import com.hyunro.bookmark.domain.user.User;
 import com.hyunro.bookmark.service.jwt.JwtService;
 import com.hyunro.bookmark.service.user.UserService;
-import com.hyunro.bookmark.web.dto.Result;
 import com.hyunro.bookmark.web.dto.user.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -29,7 +28,6 @@ public class UserApiController {
         }
         String jwt_token = jwtService.create("user", loginUser, "user");
         response.setHeader("authorization", jwt_token);
-//        System.out.println("login"+", "+jwt_token);
         return new UserLoginResponseDto(loginUser);
     }
 
@@ -60,7 +58,6 @@ public class UserApiController {
             responseDto = new UserSaveResponseDto(createdUser);
             String jwt_token = jwtService.create("user", createdUser, "user");
             response.setHeader("authorization", jwt_token);
-            //  System.out.println("register"+", "+jwt_token);
         } catch (Exception e) {
             responseDto = new UserSaveResponseDto();
             return responseDto;
@@ -71,10 +68,6 @@ public class UserApiController {
 
     @PutMapping("/api/v1/user")
     public String update(@RequestBody UserUpdateRequestDto requestDto, HttpServletResponse response) {
-        System.out.println(requestDto.getEmail());
-        System.out.println(requestDto.getName_new());
-        System.out.println(requestDto.getPassword_old());
-        System.out.println(requestDto.getPassword_new());
         User user = userService.findByEmail(requestDto.getEmail());
         if(!requestDto.getPassword_old().equals(user.getPassword())) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);

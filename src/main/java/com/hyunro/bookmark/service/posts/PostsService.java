@@ -36,7 +36,7 @@ public class PostsService {
     @Transactional
     public Long update(Long id, PostsUpdateRequestDto requestDto) {
         Posts posts = postsRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("해당 사용자가 없습니다. id="+id));
-        posts.update(requestDto.getTopic(), requestDto.getSrc_url(), requestDto.getSrc_title(), requestDto.getSrc_description());
+        posts.update(requestDto.getTopic(), requestDto.getSrc_url(), requestDto.getSrc_title(), requestDto.getSrc_description(), requestDto.getSrc_url());
         return id;
     }
 
@@ -65,8 +65,12 @@ public class PostsService {
     }
 
     @Transactional
-    public void delete(Long id) {
-        Posts posts = postsRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("해당 게시그링 없습니다. id=" + id));
-        postsRepository.delete(posts);
+    public void delete(Long posts_id, Long user_id) {
+        Posts posts = postsRepository.findById(posts_id).orElseThrow(() -> new IllegalArgumentException("해당 게시글이 없습니다. id=" + posts_id));
+        if (user_id == posts.getUser().getUser_id()) {
+            postsRepository.delete(posts);
+        } else {
+            throw new IllegalArgumentException("삭제 권한이 없습니다." + posts_id);
+        }
     }
 }

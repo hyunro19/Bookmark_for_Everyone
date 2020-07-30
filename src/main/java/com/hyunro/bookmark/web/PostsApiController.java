@@ -19,8 +19,6 @@ import java.util.List;
 @RestController
 public class PostsApiController {
 
-    // @Autowired대신 @RequiredArgsConstructor가 생성자 주입 방식으로 Bean객체를 연결해준다.
-    // final이 선언도니 모든 필드를 인자값으로 하는 생성자를 롬복의 @RequiredArgsConstructor가 대신 생성해 줌
     private final PostsService postsService;
     private final JwtService jwtService;
 
@@ -29,13 +27,11 @@ public class PostsApiController {
         if(!src_url.startsWith("http")) {
             src_url = "http://"+src_url;
         }
-        System.out.println(src_url);
-//        src_url = requestDto.getSrc_url();
+
         String src_title = null;
         String src_description = null;
         String src_img = null;
 
-        // 이미지 주소를 담을 리스트 생성
         try {
             Document document = Jsoup.connect(src_url).get();
 
@@ -45,12 +41,18 @@ public class PostsApiController {
 
             if(meta_title != null) {
                 src_title = meta_title.attr("content");
+            } else {
+                src_title = "";
             }
             if(meta_description != null) {
                 src_description = meta_description.attr("content");
+            } else {
+                src_description = "";
             }
             if(meta_image != null) {
                 src_img = meta_image.attr("content");
+            } else {
+                src_img = "https://d1nhio0ox7pgb.cloudfront.net/_img/o_collection_png/green_dark_grey/512x512/plain/book_bookmark.png";
             }
 
 
@@ -73,7 +75,6 @@ public class PostsApiController {
             return postsService.findAllDesc();
         } else if (sort.equals("my")) {
             Long user_id = jwtService.getUserId();
-//            return postsService.findAllByTopic(sort);
             return postsService.findAllByUserId(user_id);
         } else {
             return postsService.findAllByTopic(sort);
@@ -84,12 +85,6 @@ public class PostsApiController {
 
     @PostMapping("/api/v1/posts")
     public Long save(@RequestBody PostsSaveRequestDto requestDto) {
-        // request의 userid랑 같은지 확인
-//        Long token_id = Long.valueOf( (Integer)jwtService.get("user").get("user_id") );
-//        Long request_id = requestDto.getUser_id();
-//        System.out.println("token_id : "+token_id+", request_id : "+request_id);
-//        if (token_id != request_id) return 0L;
-
         return postsService.save(requestDto);
     }
 
@@ -103,9 +98,10 @@ public class PostsApiController {
         return postsService.findById(id);
     }
 
-    @DeleteMapping("api/v1/posts/{id}")
-    public Long delete (@PathVariable Long id) {
-        postsService.delete(id);
-        return id;
+    @DeleteMapping("api/v1/posts/{posts_id}")
+    public Long delete (@PathVariable Long posts_id) {
+        Long user_id = jwtService.getUserId();
+        postsService.delete(posts_id, user_id);
+        return posts_id;
     }
 }

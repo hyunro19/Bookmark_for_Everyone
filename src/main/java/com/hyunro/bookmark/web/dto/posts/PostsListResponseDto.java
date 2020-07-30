@@ -13,6 +13,7 @@ public class PostsListResponseDto {
     private String src_url;
     private String src_title;
     private String src_description;
+    private String src_img;
 
     // Constructor
     public PostsListResponseDto(Posts entity) {
@@ -22,5 +23,6 @@ public class PostsListResponseDto {
         this.src_url = entity.getSrc_url();
         this.src_title = entity.getSrc_title();
         this.src_description = entity.getSrc_description();
+        this.src_img = entity.getSrc_img();
     }
 }
