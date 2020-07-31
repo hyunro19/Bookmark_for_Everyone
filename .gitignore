@@ -2,6 +2,7 @@
 /.gradle/
 /.idea/
 application.yml
+application.properties
 application-oauth.properties
 application-real-db.properties
 

@@ -1,5 +1,6 @@
 package com.hyunro.bookmark.domain.posts;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.hyunro.bookmark.domain.BaseTimeEntity;
 import com.hyunro.bookmark.domain.user.User;
 import lombok.Builder;
@@ -30,6 +31,7 @@ public class Posts extends BaseTimeEntity {
     @Column(length = 500)
     private String src_img;
 
+    @JsonBackReference
     @ManyToOne
     @JoinColumn(name = "user_id", updatable = false)
     private User user;

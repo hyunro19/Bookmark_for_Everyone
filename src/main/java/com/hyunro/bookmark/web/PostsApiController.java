@@ -70,7 +70,6 @@ public class PostsApiController {
 
     @GetMapping("api/v1/posts_list/{sort}")
     public List<PostsListResponseDto> findAllDesc(@PathVariable("sort") String sort) {
-        System.out.println("PathVariable sort : "+sort);
         if (sort.equals("recent")) {
             return postsService.findAllDesc();
         } else if (sort.equals("my")) {

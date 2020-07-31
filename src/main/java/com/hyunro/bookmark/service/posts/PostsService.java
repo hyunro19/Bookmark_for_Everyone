@@ -26,10 +26,8 @@ public class PostsService {
 
     @Transactional
     public Long save(PostsSaveRequestDto requestDto) {
-        System.out.println("---topic requestDto---"+requestDto.getTopic());
         User user = userRepository.findById(requestDto.getUser_id()).get();
         Posts posts = requestDto.toEntity(user);
-        System.out.println("---topic postsEntity---"+posts.getTopic());
         return postsRepository.save(posts).getPosts_id();
     }
 

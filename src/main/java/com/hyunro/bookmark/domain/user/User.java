@@ -1,5 +1,6 @@
 package com.hyunro.bookmark.domain.user;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.hyunro.bookmark.domain.BaseTimeEntity;
 
 import com.hyunro.bookmark.domain.posts.Posts;
@@ -36,6 +37,7 @@ public class User extends BaseTimeEntity {
     @Column(nullable = false)
     private String password;
 
+    @JsonManagedReference
     @OneToMany(mappedBy="user")
     private List<Posts> posts = new ArrayList<Posts>();
 

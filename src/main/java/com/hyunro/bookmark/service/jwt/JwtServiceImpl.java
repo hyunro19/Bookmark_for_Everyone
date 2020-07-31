@@ -97,8 +97,6 @@ public class JwtServiceImpl implements JwtService{
     @Override
     public Long getUserId() {
         Map<String, Object> map = this.get("user");
-        for(String s : map.keySet())
-            System.out.println(s+" : "+map.get(s).toString());
         return Long.valueOf(this.get("user").get("user_id").toString());
     }
 }
