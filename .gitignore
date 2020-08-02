@@ -6,7 +6,7 @@ application.properties
 application-oauth.properties
 application-real-db.properties
 
-
+/report
 build
 out
 
