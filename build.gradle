@@ -28,7 +28,9 @@ repositories { // 각종 의존성 (라이브러리)들을 어떤 원격 저장�
 
 dependencies { // 프로젝트 개발에 필요한 의존성들을 선언하는 곳
     compile('org.springframework.boot:spring-boot-starter-web')
+    compile('org.springframework.boot:spring-boot-starter-actuator')
     compile('org.projectlombok:lombok')
+
     annotationProcessor ('org.projectlombok:lombok')
 
     // 스프링부트용 Spring Data Jpa 추상화 라이브러리
@@ -39,9 +41,6 @@ dependencies { // 프로젝트 개발에 필요한 의존성들을 선언하는 
     // 별도 설치 없이 프로젝트 의존성만으로 관리 가능
     // 메모리에서 실행되기 때문에 애플리케이션을 재시작할 때마다 초기화 (그래서 테스트용으로 많이 사용)
     compile('com.h2database:h2')
-
-    // mustache starter 의존성
-    compile('org.springframework.boot:spring-boot-starter-mustache')
 
     // 스프링 시큐리티
     // 소셜 로그인 등 클라이언트 입장에서 소셜 기능 구현시 필요한 의존성

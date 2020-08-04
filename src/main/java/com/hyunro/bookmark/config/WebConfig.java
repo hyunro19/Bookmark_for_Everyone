@@ -20,7 +20,7 @@ public class WebConfig implements WebMvcConfigurer{
             "/api/v1/user/if_exists",
             "/api/v1/posts_list/**",
             "/api/v1/posts_url",
-            "/error/**"
+            "/error/**",
     };
 
     @Autowired
